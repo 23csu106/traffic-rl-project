@@ -72,7 +72,13 @@ episodes = st.slider("Training Episodes", 10, 200, 50)
 if st.button("Train Q-Learning Agent"):
     st.info("Training... (please wait)")
 
-    results = train_and_collect(episodes=episodes)
+    from q_learning import QLearningAgent
+
+results = train_and_collect(
+    agent_class=QLearningAgent,
+    env_config=CONFIG,
+    episodes=episodes
+)
 
     st.success("Training Completed!")
 
