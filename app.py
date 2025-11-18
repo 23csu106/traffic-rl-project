@@ -21,9 +21,10 @@ arrival_e = st.sidebar.slider("Arrival Prob (East)", 0.0, 1.0, 0.5)
 arrival_w = st.sidebar.slider("Arrival Prob (West)", 0.0, 1.0, 0.5)
 depart_rate = st.sidebar.slider("Departure Rate", 1, 5, 2)
 
+# ---------------- Simulation Button -------------------
 if st.sidebar.button("Run Simulation"):
     env = IntersectionEnv(
-        max_steps=max_steps, 
+        max_steps=max_steps,
         arrival_probs={"N": arrival_n, "S": arrival_s, "E": arrival_e, "W": arrival_w},
         depart_rate=depart_rate,
         animation=False
@@ -39,7 +40,7 @@ if st.sidebar.button("Run Simulation"):
         s_next, r, done, info = env.step(a)
 
         agent.learn(s, a, r, s_next)
-        
+
         total_reward += r
         states.append(s)
         actions.append(a)
@@ -72,13 +73,12 @@ episodes = st.slider("Training Episodes", 10, 200, 50)
 if st.button("Train Q-Learning Agent"):
     st.info("Training... (please wait)")
 
-    from q_learning import QLearningAgent
-
-results = train_and_collect(
-    agent_class=QLearningAgent,
-    env_config=CONFIG,
-    episodes=episodes
-)
+    # FIXED ARGUMENTS
+    results = train_and_collect(
+        agent_class=QLearningAgent,
+        env_config=CONFIG,
+        episodes=episodes
+    )
 
     st.success("Training Completed!")
 
