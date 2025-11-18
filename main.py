@@ -164,7 +164,9 @@ def plot_metric_inline(metric_dict: Dict[str, List[float]], title: str, ylabel: 
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.show()
+    st.pyplot(plt)
+plt.close()
+
 
 
 # =====================================================
