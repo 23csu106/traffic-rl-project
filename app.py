@@ -8,7 +8,7 @@ from main import train_and_collect, plot_metric_inline, CONFIG
 
 st.set_page_config(page_title="Traffic RL Simulation", layout="wide")
 
-st.title("🚦 Reinforcement Learning Traffic Light Simulation")
+st.title("Reinforcement Learning Traffic Light Simulation")
 
 st.write("""
 This app simulates and trains two reinforcement learning agents (Q-Learning and SARSA) 
@@ -74,7 +74,7 @@ if st.button("Run Simulation"):
 #  TRAINING SECTION
 # ==============================
 
-st.header("📈 Train Both Agents (Q-Learning vs SARSA)")
+st.header("Train Both Agents (Q-Learning vs SARSA)")
 
 if st.button("Start Training"):
     st.info("Running full training… this may take a moment.")
