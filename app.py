@@ -8,18 +8,19 @@ from main import train_and_collect, plot_metric_inline, CONFIG
 
 st.set_page_config(page_title="Traffic RL Simulation", layout="wide")
 
-st.title("Reinforcement Learning Traffic Light Simulation")
+st.title("🚦 Reinforcement Learning Traffic Light Simulation")
 
 st.write("""
 This app simulates and trains two reinforcement learning agents (Q-Learning and SARSA) 
 on a custom 4-way traffic intersection.
 """)
 
-# ==============================
-#  SIMULATION SECTION
-# ==============================
 
-st.header("▶ Run Single Simulation (Q-Learning)")
+# =====================================================================
+#                       RUN SINGLE SIMULATION (Q-LEARNING)
+# =====================================================================
+
+st.header("Run Q-Learning Simulation")
 
 max_steps = st.slider("Max Steps", 10, 300, 60)
 arrival_n = st.slider("Arrival Prob (North)", 0.0, 1.0, 0.4)
@@ -43,6 +44,7 @@ if st.button("Run Simulation"):
 
     state, _ = env.reset()
     done = False
+    info = {}
 
     while not done:
         action = agent.select_action(state)
@@ -55,7 +57,7 @@ if st.button("Run Simulation"):
 
     st.success("Simulation Completed!")
 
-    # Plot reward graph
+    # Reward graph
     fig, ax = plt.subplots()
     ax.plot(rewards)
     ax.set_title("Step-wise Reward")
@@ -63,35 +65,41 @@ if st.button("Run Simulation"):
     ax.set_ylabel("Reward")
     st.pyplot(fig)
 
-    # Summary
+    # Episode summary metrics
+    metrics = env.episode_metrics()
+
     st.subheader("Simulation Summary")
     st.write(f"**Total Reward:** {total_reward}")
-    st.write(f"**Cars Arrived:** {env.stats['arrived']}")
-    st.write(f"**Cars Departed:** {env.stats['departed']}")
+    st.write(f"**Average Waiting Time:** {metrics['average_waiting_time']:.2f}")
+    st.write(f"**Average Queue Length:** {metrics['average_queue_length']:.2f}")
+    st.write(f"**Throughput (Vehicles Departed):** {metrics['throughput']:.0f}")
 
 
-# ==============================
-#  TRAINING SECTION
-# ==============================
+# =====================================================================
+#                       TRAIN BOTH AGENTS (Q-L vs SARSA)
+# =====================================================================
 
 st.header("Train Both Agents (Q-Learning vs SARSA)")
 
 if st.button("Start Training"):
-    st.info("Running full training… this may take a moment.")
-    
+    st.info("Training... (please wait)")
+
+    # This returns 4 dictionaries:
+    # avg_wait, avg_queue, throughput, total_reward
     avg_wait, avg_queue, throughput, total_reward = train_and_collect(CONFIG)
 
     st.success("Training Completed!")
 
-    # Display graphs
+    # -------------- PLOTS ------------------
+
     st.subheader("Average Waiting Time")
     plot_metric_inline(avg_wait, "Average Waiting Time per Episode", "Avg Wait")
 
     st.subheader("Average Queue Length")
     plot_metric_inline(avg_queue, "Average Queue Length per Episode", "Avg Queue")
 
-    st.subheader("Throughput")
+    st.subheader("Throughput (Vehicles Departed)")
     plot_metric_inline(throughput, "Vehicles Departed per Episode", "Throughput")
 
     st.subheader("Total Reward")
-    plot_metric_inline(total_reward, "Total Reward Convergence", "Reward")
+    plot_metric_inline(total_reward, "Reward Convergence", "Total Reward")
